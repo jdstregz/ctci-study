@@ -1,0 +1,44 @@
+---
+name: Trees
+menu: DataStructures
+---
+
+import { Playground, Props } from 'docz'
+import { Tree, InOrderTraversal, PreOrderTraversal } from './Trees'
+
+# Trees
+
+Trees are nice.
+
+## Binary Trees
+<Tree />
+
+
+### Traversal
+
+- In-Order Traversal
+    - visit the left, then the current node, then the right node:
+
+```javascript
+const inOrderTraversal = (node) => {
+    if (node != null) {
+        inOrderTraversal(node.left);
+        console.log(node.val);
+        inOrderTraversal(node.right);
+    }
+}
+```
+<InOrderTraversal />
+
+- Pre-Order Traversal
+    - visits the current node, then the left, then the right
+
+```javascript
+const preOrderTraversal = (node) => {
+    if (node != null) {
+    console.log(node.val)
+    preOrderTraversal(node.left);
+    preOrderTraversal(node.right);
+}
+```
+<PreOrderTraversal />
