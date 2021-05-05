@@ -1,10 +1,9 @@
 ---
-name: Trees
-menu: DataStructures
+name: C - Trees
+menu: 2 - Data Structures
 ---
 
-import { Playground, Props } from 'docz'
-import { Tree, InOrderTraversal, PreOrderTraversal } from './Trees'
+import {Tree, InOrderTraversal, PreOrderTraversal, PostOrderTraversal} from './Trees'
 
 # Trees
 
@@ -12,7 +11,6 @@ Trees are nice.
 
 ## Binary Trees
 <Tree />
-
 
 ### Traversal
 
@@ -36,9 +34,161 @@ const inOrderTraversal = (node) => {
 ```javascript
 const preOrderTraversal = (node) => {
     if (node != null) {
-    console.log(node.val)
-    preOrderTraversal(node.left);
-    preOrderTraversal(node.right);
+        console.log(node.val)
+        preOrderTraversal(node.left);
+        preOrderTraversal(node.right);
+    }
 }
 ```
 <PreOrderTraversal />
+
+- Post-Order Traversal
+    - visits the left, then the right, then the current;
+
+```javascript
+const postOrderTraversal = (node) => {
+    if (node != null) {
+        postOrderTraversal(node.left);
+        postOrderTraversal(node.right);
+        console.log(node.val);
+    }
+}
+```
+
+<PostOrderTraversal/>
+
+## Binary Heaps (Min-Heaps and Max-Heaps)
+
+Binary heaps are complete binary trees, which are totally filled other than the rightmost elements on the last level.
+- If it's a min-heap, the root is the element with the minimum value, and each element is smaller than its children
+- If it's a max-heap, the root is the element with the maximum value, and each element is larger than its children
+
+Heaps can be created using arrays:
+
+### Min-Heap Example
+```javascript
+let getLeft = (index) => index * 2 + 1;
+let getRight = (index) => index * 2 + 2;
+let getParent = (index) => Math.floor((index - 1) / 2);
+
+function MinHeap() {
+    this.heap = [];
+}
+
+MinHeap.prototype.swap = function(index1, index2) {
+    let temp = this.heap[index1];
+    this.heap[index1] = this.heap[index2];
+    this.heap[index2] = temp;
+}
+
+// Inserting is one of the key functions of a heap
+// 1. We insert our element at the bottom of the heap
+// 2. We then fix the tree by passing the element towards the top
+MinHeap.prototype.insert = function(item) {
+    this.heap.push(item);
+    let index = this.heap.length - 1;
+    // now we check to see if the parent is greater than the child, and if so we swap them
+    while (index > 0 && this.heap[index] < this.heap[getParent(index)]) {
+        this.swap(index, getParent(index));
+        index = getParent(index);
+    }
+}
+
+MinHeap.prototype.heapify = function(index) {
+    // first we assume that the parent is the largest value
+    let smallest = index;
+    let left = getLeft(index);
+    let right = getRight(index);
+
+    // if the right child exists and if parent is greater than the right
+    if (right < this.heap.length && this.heap[smallest] > this.heap[right]) {
+        // then we want to make the
+        smallest = right;
+    }
+    // now we need to make sure that the left is not smaller
+    if (left < this.heap.length && this.heap[biggest] > this.heap[left]) {
+        smallest = left;
+    }
+    // and if the parent isn't already the smallest
+    if (smallest != index) {
+        // we swap the smallest and the parent, and then run heapify again
+        this.swap(smallest, index);
+        this.heapify(smallest);
+    }
+}
+
+// The second important key functions is our extractMin function
+// 1. We pop the head of the heap and take the last element and put it there
+// 2. we then shimmy the value down in the tree, swapping with the smaller elements
+MinHeap.prototype.extractMin = function(index) {
+    const root = this.heap.shift();
+    const end = this.heap[this.heap.length - 1];
+    this.heap.unshift(end);
+    this.heap.pop();
+    this.heapify(0);
+    return root;
+};
+```
+
+## Tries (Prefix Trees)
+
+Tries are a type of tree that can have as many children per node as required (n-ary tree). Most examples use
+them as paths that a word can take. Each path is the continuation of the word from the previous letter. Technically
+the entire dictionary could be represented in a Trie, where the root node would have 26 children, each representing the
+possible first letters of each word.
+
+```javascript
+function Trie() {
+    this.head = {
+        key: '',
+        children: {}
+    }
+}
+
+Trie.prototype.add = function(key) {
+    let currentNode = this.head;
+    let newNode = null;
+    let curChar = key.slice(0, 1);
+
+    // remove the first char of key
+    key = key.slice(1);
+
+    // while we are iterating through the characters of the key
+    // we check to see if the characters are already in the trie
+    while(currentNode.children[curChar] != null && curChar.length > 0) {
+        currentNode = currentNode.children[curChar];
+        curChar = key.slice(0,1);
+        key = key.slice(1);
+    }
+    // once we've reached the end either the key is all in or the
+    // key isnt all in and we need to add some new nodes
+    while(curChar.length > 0) {
+        newNode = {
+            key: curChar,
+            word: key.length === 0,
+            children: {}
+        };
+        currentNode.children[curChar] = newNode;
+        currentNode = newNode;
+        curChar = key.slice(0, 1);
+        key = key.slice(1);
+    }
+}
+
+Trie.prototype.search = function(key) {
+    let currentNode = this.head;
+    let curChar = key.slice(0, 1);
+    while(currentNode.children[curChar] != null && curChar.length > 0) {
+        currentNode = currentNode.children[curChar];
+        curChar = key.slice(0, 1);
+        key = key.slice(1);
+    }
+    if (currentNode.word && key.length === 0) {
+        true;
+    } else {
+        return false;
+    }
+}
+
+// TODO: write functions for removing a key
+```

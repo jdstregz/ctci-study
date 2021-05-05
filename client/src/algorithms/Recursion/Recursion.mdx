@@ -1,0 +1,76 @@
+---
+name: B - Recursion
+menu: 3 - Algorithms
+---
+import {Fibonacci} from './Recursion';
+
+# Recursion
+
+Recursion is a specific way of solving a problem, and can usually be applied to problems that require diving
+through to compute a problem on the nth of an item, usually by mutating the solution of the n-1 problem.
+
+Recursive problems are space intensive, since every recursive call adds a new layer to the stack. Every recursive
+solution has at least O(n) space complexity.
+
+## Dynamic Programming
+Dynamic programming means to use a recursive algorithm, find the overlapping subproblems (repeated calls on the same item),
+and to cache those results for future calls.
+
+Here is an example of a recursive solution vs a dynamic programming solution to the fibonnaci numbers problem:
+
+```javascript
+const fibonacci = (n) => {
+    if (i == 0) {
+        return 0;
+    }
+    if (i == 1) {
+        return 1;
+    }
+    return fibonacci(i - 1) + fibonacci(i - 2);
+}
+```
+The above solution definitely works, but it costs a lot of time: O(2^n)
+
+With some memoization added, we can make the function cache the results so that future fibonacci calls
+don't have to go through the same steps:
+
+```javascript
+const fibonacci = (n) => {
+    const memo = {};
+    const recursiveFib = (i) => {
+        if (i == 0 || i == 1) {
+            return i;
+        }
+        if (memo[i] == null) {
+            memo[i] = recursiveFib(i - 1) + recursiveFib(i - 2);
+        }
+        return memo[i];
+    }
+    return recursiveFib(n);
+}
+```
+
+We can actually show the time it takes to solve these problems:
+<Fibonacci/>
+
+I literally can't do more than fib(41) because the recursive answer takes too long and my computer crashes...
+
+### Bottom Up vs Top Down
+The above dynamic programming implementation is an example of top down, where we start at the top of the chain and
+solve downwards towards n = 0. Bottom up is the opposite:
+
+```javascript
+const fib = (n) => {
+    if (n === 0) {
+        return 0;
+    }
+    let a = 0;
+    let b = 1;
+    for (let i = 2; i < n; i +=1) {
+        let c = a + b;
+        a = b;
+        b = c;
+    }
+    return a + b;
+}
+```

@@ -48,7 +48,7 @@ const ten = {
     right: fourteen,
 };
 
-const root = {
+export const root = {
     val: 8,
     left: three,
     right: ten,
@@ -92,3 +92,22 @@ export const PreOrderTraversal = () => {
     }, []);
     return (<p>{answer}</p>)
 };
+
+export const PostOrderTraversal = () => {
+    const [answer, setAnswer] = React.useState('');
+
+    React.useEffect(() => {
+        let newAnswer = [];
+        const postOrderTravFunc = (node) => {
+            if (node) {
+                postOrderTravFunc(node.left);
+                postOrderTravFunc(node.right);
+                newAnswer.push(node.val);
+            }
+        }
+        postOrderTravFunc(root);
+        setAnswer(newAnswer.join(', '));
+    }, [])
+
+    return (<p>{answer}</p>)
+}
